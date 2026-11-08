@@ -69,6 +69,29 @@ func _initialize() -> void:
 	g.place(35)
 	check(g.state.status == "lost", "full board fails")
 
+	g = Garden.new(11, {"plants": [[0, 0, 2], [1, 0, 2], [2, 0, 1], [9, 1, 0], [15, 1, 2], [21, 1, 2]]})
+	g.state.echo[3] = 2
+	g.place(3)
+	check(g.state.score == 875 and g.state.combo == 2 and g.state.echoes == 1, "Echo cascades continue the turn multiplier")
+	check(g.events.filter(func(event: Dictionary) -> bool: return event.kind == "echo").size() == 1, "one Echo pulse per placement")
+
+	g = Garden.new(4, {"plants": [[0, 0, 2], [1, 0, 2], [2, 0, 1], [35, 1, 2]]})
+	check(not g.boost(35, 1) and g.state.boosts[1] == 1, "water rejects mature plants without consuming charge")
+	check(g.boost(2, 1) and g.state.score == 350 and g.state.moves == 0 and g.state.boosts[1] == 0, "water uses shared match resolver")
+	check(g.boost(35, 2) and g.state.board[35] == Garden.EMPTY and g.state.echo[35] == 0 and g.state.score == 350, "shovel removal has no score or Echo")
+	g = Garden.new(4, {"species": 4, "plants": [[0, 2, 1]]})
+	check(g.boost(0, 3) and g.state.board[0] == Garden.plant(3, 1), "Color Magic preserves growth stage")
+
+	g = Garden.new()
+	for cell in 36:
+		g.state.board[cell] = Garden.plant((cell + Garden.coord(cell).y) % 3, 2)
+	g.state.board[0] = 2
+	g.state.board[1] = 2
+	g.state.board[2] = 1
+	g.state.board[3] = Garden.EMPTY
+	g.place(3)
+	check(g.state.status == "playing" and g.state.score >= 350, "last space can resolve into new space")
+
 	var puzzle := Puzzles.tutorial()
 	verify_solution(puzzle, "tutorial")
 	for level in range(1, Puzzles.LEVEL_COUNT + 1):

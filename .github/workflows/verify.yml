@@ -1,0 +1,32 @@
+name: Godot verification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GODOT_VERSION: 4.7.2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot
+        run: |
+          asset="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/godot.zip" \
+            "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${asset}.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP"
+          ln -s "$RUNNER_TEMP/$asset" "$RUNNER_TEMP/godot"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Import project
+        run: godot --headless --path . --editor --import
+      - name: Run rules and navigation tests
+        run: |
+          godot --headless --path . --script tests/rules.gd
+          godot --headless --path . --script tests/ui.gd

@@ -60,6 +60,7 @@ func _ready() -> void:
 	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(canvas)
 	resized.connect(_resize_canvas)
+	get_window().go_back_requested.connect(_back)
 	_resize_canvas()
 	profile.load_game()
 	sound = GardenSound.new()
@@ -86,11 +87,9 @@ func _notification(what: int) -> void:
 		_save()
 	elif what == NOTIFICATION_APPLICATION_RESUMED and is_instance_valid(canvas):
 		_resize_canvas()
-	elif what == NOTIFICATION_WM_GO_BACK_REQUEST and is_instance_valid(page):
-		_back()
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if not OS.has_feature("android") and event.is_action_pressed("ui_cancel"):
 		_back()
 		get_viewport().set_input_as_handled()
 
@@ -399,7 +398,8 @@ func _refresh() -> void:
 	match mode:
 		"endless":
 			mode_label.text = "E N D L E S S"
-			goal_label.text = "%d moves  ·  %d flowers cleared" % [state.moves, _flower_count(state)]
+			var moves_text := "%d %s" % [state.moves, "move" if state.moves == 1 else "moves"]
+			goal_label.text = "%s  ·  %d flowers cleared" % [moves_text, _flower_count(state)]
 		"tutorial":
 			mode_label.text = "L E A R N   T O   P L A Y"
 			goal_label.text = TUTORIAL_TIPS[mini(state.moves, TUTORIAL_TIPS.size() - 1)]

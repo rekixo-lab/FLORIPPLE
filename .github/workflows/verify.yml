@@ -20,7 +20,8 @@ jobs:
         run: |
           asset="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
           curl --fail --location --retry 3 --output "$RUNNER_TEMP/godot.zip" \
-            "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${asset}.zip"
+            "https://downloads.godotengine.org/?version=${GODOT_VERSION}&flavor=stable&slug=linux.x86_64.zip&platform=linux"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  $RUNNER_TEMP/godot.zip" | sha256sum --check
           unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP"
           ln -s "$RUNNER_TEMP/$asset" "$RUNNER_TEMP/godot"
           echo "$RUNNER_TEMP" >> "$GITHUB_PATH"

@@ -66,3 +66,22 @@ The rules suite replays a winning sequence for every published level, along with
 Daily puzzles use UTC dates and a deterministic map and orientation derived from the date. Saves store the complete stable state, including RNG and tray, with a version, checksum, temporary-file replacement, and a previous-save backup. Android force-stop after a committed move can be tested by returning to the home screen and using **Continue garden** on relaunch.
 
 For a physical-device pass, test gestures near cutouts, background and resume, headphones and haptics, and frame pacing across graphics presets.
+
+## GitHub Actions artifacts
+
+The **Godot verification** workflow runs the Godot suites, exports a debug APK
+and an unsigned AAB, and uploads both as **floripple-android**. Open a successful
+workflow run and download the archive under **Artifacts**. CI creates a fresh
+debug key each run. Android may require removing a prior APK signed by a
+different debug key before installing a new CI build. Removing the app also
+removes its local saves.
+
+For a longer simulation, pass a seed count, move cap and optional strategy:
+
+```sh
+godot --headless --path . -s tests/balance.gd -- 1000 500 random
+```
+
+The output reports how many sessions reached the move cap. Treat those session
+lengths as lower bounds. Simulations measure the rules under programmed play.
+Physical-device and human playtesting measure different outcomes.

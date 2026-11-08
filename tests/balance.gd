@@ -1,21 +1,34 @@
 extends SceneTree
 
-const RUNS := 12
-const CAP := 100
+const DEFAULT_RUNS := 12
+const DEFAULT_CAP := 100
 const STRATEGIES := ["random", "greedy", "space", "growth", "lookahead"]
 
 func _initialize() -> void:
+	var args := OS.get_cmdline_user_args()
+	if args.size() > 3 or (args.size() >= 1 and not args[0].is_valid_int()) or (args.size() >= 2 and not args[1].is_valid_int()):
+		_usage_error()
+		return
+	var runs := int(args[0]) if args.size() >= 1 else DEFAULT_RUNS
+	var cap := int(args[1]) if args.size() >= 2 else DEFAULT_CAP
+	var strategy_filter := args[2] if args.size() == 3 else ""
+	if runs < 1 or cap < 1 or (not strategy_filter.is_empty() and strategy_filter not in STRATEGIES):
+		_usage_error()
+		return
+	print("Endless simulation: %d seeds, maximum %d moves per seed" % [runs, cap])
 	for strategy: String in STRATEGIES:
+		if not strategy_filter.is_empty() and strategy != strategy_filter:
+			continue
 		var totals := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 		var highest := 0
 		var capped := 0
 		var wins := 0
 		var rng := RandomNumberGenerator.new()
 		rng.seed = 401
-		for i in RUNS:
+		for i in runs:
 			var garden := Garden.new(137 * i + 13)
 			garden.collect_events = false
-			while garden.state.status == "playing" and garden.state.moves < CAP:
+			while garden.state.status == "playing" and garden.state.moves < cap:
 				var moves := legal(garden)
 				var action := choose(garden, moves, strategy, rng)
 				garden.place(action.x, action.y)
@@ -36,10 +49,14 @@ func _initialize() -> void:
 				garden.place(action.x, action.y)
 			wins += int(garden.state.status == "won")
 		print("%s | moves %.1f | score %.0f | best %d | max chain avg %.2f | Echo %.2f | occupied %.1f | legal %.1f | full %d | capped %d | levels %d/%d" % [
-			strategy, totals[0] / RUNS, totals[1] / RUNS, highest, totals[2] / RUNS, totals[3] / RUNS,
-			totals[4] / totals[0], totals[5] / totals[0], RUNS - capped, capped, wins, Puzzles.LEVEL_COUNT
+			strategy, totals[0] / runs, totals[1] / runs, highest, totals[2] / runs, totals[3] / runs,
+			totals[4] / totals[0], totals[5] / totals[0], runs - capped, capped, wins, Puzzles.LEVEL_COUNT
 		])
 	quit()
+
+func _usage_error() -> void:
+	push_error("Usage: godot --headless -s tests/balance.gd -- [runs] [move_cap] [strategy]")
+	quit(2)
 
 func legal(garden: Garden) -> Array[Vector2i]:
 	var actions: Array[Vector2i] = []

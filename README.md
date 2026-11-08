@@ -1,8 +1,13 @@
-# FLORIPPLE# MASTER DEVELOPMENT PROMPT
-# BLOOM GARDEN — PREMIUM ANDROID CASUAL PUZZLE GAME
+# FLORIPPLE
+
+# MASTER DEVELOPMENT PROMPT
+# FLORIPPLE — PREMIUM ANDROID CASUAL PUZZLE GAME
 
 **Project Type:** Complete Android Game Development  
-**Project Name:** Bloom Garden  
+**Project Name:** Floripple  
+**Game Name:** Floripple  
+**Display Name:** FLORIPPLE  
+**Android Package Name:** `com.rekixo.floripple`  
 **Genre:** Casual Strategy / Living Garden Puzzle / Endless Score Puzzle  
 **Primary Platform:** Android Smartphones  
 **Orientation:** Portrait  
@@ -29,7 +34,7 @@ You are acting as a highly experienced game development team consisting of:
 - Android Release Engineer
 - Software Testing and QA Engineer
 
-Your responsibility is to design, implement, optimize, test, and complete a premium casual Android puzzle game named **Bloom Garden**.
+Your responsibility is to design, implement, optimize, test, and complete a premium casual Android puzzle game named **Floripple**.
 
 The game must feel like a high-quality commercial mobile game from the first launch.
 
@@ -65,7 +70,7 @@ The game must be developed as a completely independent intellectual property.
 
 Official working title:
 
-**BLOOM GARDEN**
+**FLORIPPLE**
 
 Brand identity:
 
@@ -93,7 +98,7 @@ Strictly prohibited branding and assets:
 
 Do not create or modify another game's repository.
 
-If an existing Bloom Garden repository is provided, inspect and preserve its architecture where appropriate.
+If an existing Floripple repository is provided, inspect and preserve its architecture where appropriate.
 
 Otherwise, create a clean, independent project.
 
@@ -105,7 +110,7 @@ The flowers, water, soil, leaves, glowing energy, and beautiful environments mus
 
 # 3. VISUAL REFERENCE — EXTREMELY IMPORTANT
 
-Use the final Bloom Garden gameplay reference image supplied in the conversation as the primary visual-art reference.
+Use the final Floripple gameplay reference image supplied in the conversation as the primary visual-art reference.
 
 The user expects the actual implemented game to closely resemble the visual richness of that reference.
 
@@ -198,7 +203,7 @@ The game's essential gameplay must work completely offline.
 
 # 5. CORE GAME CONCEPT
 
-Bloom Garden is a strategic living-garden puzzle.
+Floripple is a strategic living-garden puzzle.
 
 The player plants colored flower seeds into empty soil cells.
 
@@ -1248,7 +1253,7 @@ The visual reference's small watering can and utility buttons can be retained as
 
 # 21. COMPLETE GAMEPLAY UI LAYOUT
 
-The gameplay UI must closely follow the supplied Bloom Garden reference.
+The gameplay UI must closely follow the supplied Floripple reference.
 
 The final design must have only the actual game screen.
 
@@ -1260,7 +1265,7 @@ Use a full-screen portrait presentation.
 
 A wooden garden sign with the title:
 
-**BLOOM GARDEN**
+**FLORIPPLE**
 
 Requirements:
 
@@ -1863,7 +1868,7 @@ Create a premium home screen consistent with the main gameplay art.
 
 The home screen must include:
 
-- Bloom Garden logo.
+- Floripple logo.
 - Beautiful garden background.
 - Subtle animated flowers.
 - Primary Play button.
@@ -2728,7 +2733,7 @@ Do not treat the prototype as the final deliverable.
 
 ## Phase 5 — Premium graphics
 
-Recreate the supplied Bloom Garden visual identity.
+Recreate the supplied Floripple visual identity.
 
 Implement:
 
@@ -2815,7 +2820,7 @@ The game is not complete unless the following requirements are met.
 - No panda.
 - No animal character.
 - No Paws branding.
-- Bloom Garden branding is consistent.
+- Floripple branding is consistent.
 - Beautiful bright garden background.
 - High-quality wood-and-soil board.
 - Premium glossy buttons.
@@ -2900,7 +2905,7 @@ Requirement: Prioritize gameplay and visual polish.
 
 **Mistake 14:** Reintroducing panda or animal-related branding.
 
-Requirement: Bloom Garden must have a completely independent visual identity.
+Requirement: Floripple must have a completely independent visual identity.
 
 **Mistake 15:** Claiming completion without actual testing.
 
@@ -2910,7 +2915,7 @@ Requirement: Run tests and report verified results accurately.
 
 # 50. FINAL QUALITY TARGET
 
-The finished Bloom Garden game should feel like a premium, commercially produced Android puzzle game.
+The finished Floripple game should feel like a premium, commercially produced Android puzzle game.
 
 A new player should immediately notice:
 
@@ -2996,9 +3001,9 @@ The final deliverable should be a genuine playable Android game with professiona
 
 # 52. MANDATORY FINAL INSTRUCTION
 
-**BUILD BLOOM GARDEN AS A REAL, BEAUTIFUL, COMPLETE, HIGH-QUALITY ANDROID PUZZLE GAME.**
+**BUILD FLORIPPLE AS A REAL, BEAUTIFUL, COMPLETE, HIGH-QUALITY ANDROID PUZZLE GAME.**
 
-Treat the supplied Bloom Garden gameplay image as the required visual-quality benchmark.
+Treat the supplied Floripple gameplay image as the required visual-quality benchmark.
 
 Treat the gameplay rules in this specification as the authoritative functional design.
 
@@ -3018,7 +3023,7 @@ Implement the project systematically, validate all major systems, and ensure tha
 
 **Final identity:**
 
-BLOOM GARDEN
+FLORIPPLE
 
 **Primary tagline:**
 

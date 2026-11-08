@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     env:
       GODOT_VERSION: 4.7.2
     steps:
@@ -31,3 +31,26 @@ jobs:
         run: |
           godot --headless --path . --script tests/rules.gd
           godot --headless --path . --script tests/ui.gd
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android SDK packages
+        run: sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+      - name: Install Godot Android templates
+        run: |
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/templates.tpz" \
+            "https://downloads.godotengine.org/?version=${GODOT_VERSION}&flavor=stable&slug=export_templates.tpz&platform=templates"
+          echo "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011  $RUNNER_TEMP/templates.tpz" | sha256sum --check
+          template_dir="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$template_dir"
+          unzip -j "$RUNNER_TEMP/templates.tpz" 'templates/android*' 'templates/version.txt' -d "$template_dir"
+      - name: Build and verify Android artifacts
+        run: bash tools/build_android_ci.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floripple-android
+          path: |
+            build/FLORIPPLE-debug.apk
+            build/FLORIPPLE-unsigned.aab
+          if-no-files-found: error

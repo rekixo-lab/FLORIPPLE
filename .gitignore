@@ -1,0 +1,17 @@
+# Godot editor-generated cache
+.godot/
+*.translation
+# Build artifacts
+build/
+*.apk
+*.aab
+# Android build template outputs (generated locally)
+android/build/
+android/.gradle/
+# Sensitive signing material must never be committed
+*.keystore
+*.jks
+*.p12
+*.pem
+.env
+.env.*

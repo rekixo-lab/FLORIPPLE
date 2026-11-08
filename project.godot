@@ -1,0 +1,24 @@
+; FLORIPPLE — Godot 4 Android project
+; This is the executable project configuration, separate from README instructions.
+config_version=5
+
+[application]
+
+config/name="FLORIPPLE"
+config/description="Floripple — a living garden puzzle."
+config/version="0.1.0"
+run/main_scene="res://scenes/main.tscn"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+textures/default_filters/use_nearest_mipmap_filter=false

@@ -13,10 +13,13 @@ const MOSS := Color("#497d46")
 const WOOD_DARK := Color("#663d2a")
 const SPECIES := [Color("#416f34"), Color("#a33968"), Color("#315c9c"), Color("#a66a25")]
 const TOOL_NAMES := ["Undo", "Water", "Shovel", "Color Magic"]
+const TUTORIAL_STEPS := ["PLANT", "WATER PULSE", "MATCH", "BLOOM ECHO", "YOUR CHOICE"]
 const TUTORIAL_TIPS := [
-	"Plant here to water the whole row and column.",
-	"Water the pink bud again to bloom three flowers.",
-	"Plant on glowing soil for a bonus Echo pulse."
+	"Tap the outlined soil to plant a seed.",
+	"Water grows every color in its row and column.",
+	"Grow the last pink bud to match three flowers.",
+	"Plant on glowing soil for a second pulse.",
+	"Try both previews, then choose where to plant."
 ]
 
 var profile := Profile.new()
@@ -35,6 +38,11 @@ var best_title: Label
 var mode_label: Label
 var goal_label: Label
 var feedback: Label
+var active_seed_panel: Panel
+var active_seed_icon: TextureRect
+var active_seed_label: Label
+var active_seed_species := -1
+var preview_label: Label
 var undo_button: Button
 var tools_button: Button
 var seed_buttons: Array[Button] = []
@@ -343,10 +351,8 @@ func _start(next_mode: String, id: int = 0, restart: bool = false) -> void:
 		_:
 			session_key = "endless"
 	garden = null if restart else profile.restore(session_key)
-	if garden == null or (garden.state.status != "playing" and mode != "tutorial"):
+	if garden == null or garden.state.status != "playing" or (mode == "tutorial" and garden.state.puzzle.get("goal") != "learn"):
 		garden = Garden.new(puzzle.get("seed", randi()), puzzle)
-	if garden.state.status != "playing":
-		garden = Garden.new(puzzle.seed, puzzle)
 	active_tool = 0
 	new_record = false
 	locked = false
@@ -356,24 +362,30 @@ func _start(next_mode: String, id: int = 0, restart: bool = false) -> void:
 
 func _game() -> void:
 	_new_page("game")
-	_logo(40, true)
-	_button(page, "Ⅱ", Rect2(26, 58, 80, 80), _pause, GREEN, 38)
-	_panel(page, Rect2(42, 188, 636, 137))
-	_label(page, "S C O R E", Rect2(50, 200, 304, 37), 23, GOLD)
-	best_title = _label(page, "", Rect2(366, 200, 304, 37), 23, GOLD)
-	score_label = _label(page, "0", Rect2(51, 237, 304, 70), 54)
-	best_label = _label(page, "0", Rect2(365, 237, 304, 70), 54)
+	_logo(24, true)
+	_button(page, "Ⅱ", Rect2(26, 42, 80, 80), _pause, GREEN, 38)
+	_panel(page, Rect2(42, 157, 636, 103))
+	_label(page, "S C O R E", Rect2(50, 161, 304, 33), 23, GOLD)
+	best_title = _label(page, "", Rect2(366, 161, 304, 33), 23, GOLD)
+	score_label = _label(page, "0", Rect2(51, 193, 304, 57), 54)
+	best_label = _label(page, "0", Rect2(365, 193, 304, 57), 54)
 	var separator := ColorRect.new()
 	separator.color = Color(GOLD, .45)
 	separator.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_position(separator, Rect2(359, 209, 2, 95), page)
-	_panel(page, Rect2(42, 345, 636, 93), Color("#285744"), GOLD.darkened(.16))
-	mode_label = _label(page, "", Rect2(51, 351, 618, 36), 25, GOLD)
-	goal_label = _label(page, "", Rect2(48, 389, 624, 41), 25)
+	_position(separator, Rect2(359, 174, 2, 67), page)
+	_panel(page, Rect2(42, 275, 636, 81), Color("#285744"), GOLD.darkened(.16))
+	mode_label = _label(page, "", Rect2(51, 278, 618, 32), 25, GOLD)
+	goal_label = _label(page, "", Rect2(48, 311, 624, 38), 25)
 	board = GardenBoard.new()
-	board.cell_pressed.connect(_cell_pressed)
+	board.cell_released.connect(_cell_released)
+	board.preview_changed.connect(_preview_cell)
 	_position(board, Rect2(41, 462, 638, 638), page)
-	feedback = _label(page, "", Rect2(51, 434, 618, 33), 25, GOLD)
+	active_seed_species = -1
+	active_seed_panel = _panel(page, Rect2(42, 369, 636, 59), WOOD_DARK)
+	active_seed_icon = _flower(active_seed_panel, Rect2(14, -4, 67, 67), Garden.plant(0, 0))
+	active_seed_label = _label(active_seed_panel, "", Rect2(80, 2, 240, 52), 24)
+	preview_label = _label(active_seed_panel, "", Rect2(323, 2, 301, 52), 20, CREAM)
+	feedback = _label(page, "", Rect2(51, 430, 618, 30), 23, GOLD)
 	_panel(page, Rect2(36, 1117, 648, 127), WOOD_DARK)
 	undo_button = _button(page, "Undo", Rect2(48, 1154, 91, 62), _undo, GREEN, 22)
 	tools_button = _button(page, "Tools", Rect2(580, 1154, 91, 62), _boosters, GREEN, 22)
@@ -401,8 +413,9 @@ func _refresh() -> void:
 			var moves_text := "%d %s" % [state.moves, "move" if state.moves == 1 else "moves"]
 			goal_label.text = "%s  ·  %d flowers cleared" % [moves_text, _flower_count(state)]
 		"tutorial":
-			mode_label.text = "L E A R N   T O   P L A Y"
-			goal_label.text = TUTORIAL_TIPS[mini(state.moves, TUTORIAL_TIPS.size() - 1)]
+			var step := mini(int(state.moves), TUTORIAL_STEPS.size() - 1)
+			mode_label.text = "%d / 5  ·  %s" % [step + 1, TUTORIAL_STEPS[step]]
+			goal_label.text = TUTORIAL_TIPS[step]
 		_:
 			if mode == "daily":
 				mode_label.text = "DAILY  /  %s" % day
@@ -415,7 +428,10 @@ func _refresh() -> void:
 			goal_label.text = "%s  %d/%d   ·   %d moves left" % [Puzzles.description(state.puzzle), garden.objective(), state.puzzle.target, garden.remaining()]
 	var guide_slot := -1
 	board.cue = -1
-	if mode == "tutorial" and state.moves < state.puzzle.guide.size():
+	board.choices = []
+	if mode == "tutorial" and state.moves == 4:
+		board.choices = state.puzzle.choice
+	elif mode == "tutorial" and state.moves < 4:
 		var guide: Array = state.puzzle.guide[state.moves]
 		board.cue = guide[0]
 		guide_slot = guide[1]
@@ -437,7 +453,54 @@ func _refresh() -> void:
 	undo_button.disabled = mode == "tutorial" or state.boosts[0] <= 0 or garden.previous.is_empty()
 	tools_button.disabled = mode == "tutorial"
 	tools_button.text = ("Magic" if active_tool == 3 else TOOL_NAMES[active_tool]) if active_tool > 0 else "Tools"
+	_refresh_seed()
 	board.queue_redraw()
+
+func _refresh_seed() -> void:
+	var species: int = garden.state.tray[garden.state.slot]
+	var tint: Color = SPECIES[species]
+	if species != active_seed_species:
+		active_seed_species = species
+		board.flash_seed(tint.lightened(.55))
+	active_seed_panel.add_theme_stylebox_override("panel", _style(tint.darkened(.25), GOLD))
+	var atlas: AtlasTexture = active_seed_icon.texture
+	atlas.region = GardenBoard.sprite_region(Garden.plant(species, 1))
+	active_seed_icon.visible = active_tool == 0
+	active_seed_label.text = "Selected: " + Puzzles.NAMES[species] if active_tool == 0 else TOOL_NAMES[active_tool]
+	preview_label.text = _tray_summary()
+
+func _tray_summary() -> String:
+	var remaining := PackedStringArray()
+	for slot in 3:
+		if slot != garden.state.slot and garden.state.tray[slot] >= 0:
+			remaining.append(Puzzles.NAMES[garden.state.tray[slot]])
+	return "Tray: " + "  ·  ".join(remaining) if not remaining.is_empty() else "Refills after this seed"
+
+func _tutorial_allows(cell: int) -> bool:
+	if mode != "tutorial":
+		return true
+	if not board.choices.is_empty():
+		return cell in board.choices
+	return cell == board.cue
+
+func _preview_cell(cell: int) -> void:
+	board.set_preview({})
+	if locked or active_tool > 0 or is_instance_valid(overlay):
+		return
+	preview_label.text = _tray_summary()
+	if cell < 0 or not _tutorial_allows(cell):
+		return
+	var result := garden.preview(cell)
+	if result.is_empty():
+		return
+	board.set_preview(result)
+	if result.points > 0:
+		preview_label.text = "+%d  ·  %d %s" % [result.points, result.waves, "wave" if result.waves == 1 else "waves"]
+	elif result.echo:
+		preview_label.text = "Echo  ·  Two pulses"
+	else:
+		var count: int = result.growth.size()
+		preview_label.text = "No growth yet" if count == 0 else "%d %s" % [count, "plant grows" if count == 1 else "plants grow"]
 
 func _flower_count(state: Dictionary) -> int:
 	var total := 0
@@ -449,21 +512,23 @@ func _select(slot: int) -> void:
 	if locked or is_instance_valid(overlay):
 		return
 	if garden.select(slot):
+		board.cancel_preview()
 		active_tool = 0
 		feedback.text = ""
 		_refresh()
 		profile.store(session_key, garden)
 		_save()
 
-func _cell_pressed(cell: int) -> void:
+func _cell_released(cell: int) -> void:
 	if locked or is_instance_valid(overlay):
 		return
-	if mode == "tutorial" and board.cue >= 0 and cell != board.cue:
+	if not _tutorial_allows(cell):
 		return
 	var accepted := garden.boost(cell, active_tool) if active_tool > 0 else garden.place(cell)
 	if not accepted:
 		return
 	locked = true
+	board.accepting_moves = false
 	active_tool = 0
 	_commit_turn()
 	_present_turn()
@@ -499,6 +564,7 @@ func _present_turn() -> void:
 	if not profile.data.settings.motion:
 		speed *= 0.55
 	board.cue = -1
+	board.choices = []
 	feedback.text = ""
 	for event: Dictionary in garden.events:
 		var kind: String = event.kind
@@ -521,6 +587,7 @@ func _present_turn() -> void:
 	elif new_record and mode == "endless" and garden.state.score == profile.data.best and garden.previous.score != garden.state.score:
 		feedback.text = "NEW BEST  ·  %d" % garden.state.score
 	locked = false
+	board.accepting_moves = garden.state.status == "playing"
 	if garden.state.status != "playing":
 		_result()
 
@@ -531,6 +598,7 @@ func animate_score(target: int, seconds: float) -> void:
 func _undo() -> void:
 	if locked or is_instance_valid(overlay) or mode == "tutorial":
 		return
+	board.cancel_preview()
 	var prior := garden.state
 	if garden.undo():
 		profile.data.flowers = maxi(0, profile.data.flowers - _flower_count(prior) + _flower_count(garden.state))
@@ -544,6 +612,8 @@ func _undo() -> void:
 		feedback.text = "MOVE RESTORED"
 
 func _dialog(title: String, message: String, height: float) -> Panel:
+	if is_instance_valid(board):
+		board.cancel_preview()
 	_close_overlay()
 	var focused := get_viewport().gui_get_focus_owner()
 	if focused != null:
@@ -627,7 +697,27 @@ func _boosters() -> void:
 		var labels := ["", "Water  ·  Grow one stage", "Shovel  ·  Remove a plant", "Color Magic  ·  Change species"]
 		var control := _button(dialog, "%s  (%d)" % [labels[tool], charges], Rect2(38, 245 + (tool - 1) * 70, 524, 62), _arm.bind(tool), GREEN, 23)
 		control.disabled = charges <= 0
-	_button(dialog, "Back", Rect2(38, 465, 524, 62), _arm.bind(0))
+	if mode == "level" and garden.state.puzzle.id <= 5:
+		_button(dialog, "Hint", Rect2(38, 465, 254, 62), _hint)
+		_button(dialog, "Back", Rect2(308, 465, 254, 62), _arm.bind(0))
+	else:
+		_button(dialog, "Back", Rect2(38, 465, 524, 62), _arm.bind(0))
+
+func _hint() -> void:
+	_arm(0)
+	var best_cell := -1
+	var best_value := -1
+	for cell in Garden.COUNT:
+		var result := garden.preview(cell)
+		if result.is_empty():
+			continue
+		var value: int = result.points + result.growth.size()
+		if value > best_value:
+			best_cell = cell
+			best_value = value
+	board.cue = best_cell
+	feedback.text = "TRY THE OUTLINED SOIL" if best_cell >= 0 else ""
+
 
 func _arm(tool: int) -> void:
 	active_tool = tool

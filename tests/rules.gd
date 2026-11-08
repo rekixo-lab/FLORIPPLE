@@ -92,6 +92,17 @@ func _initialize() -> void:
 	g.place(3)
 	check(g.state.status == "playing" and g.state.score >= 350, "last space can resolve into new space")
 
+	var forecast := Garden.new(11, {"plants": [[0, 0, 2], [1, 0, 2], [2, 0, 1], [9, 1, 0], [15, 1, 2], [21, 1, 2]], "rocks": [4]})
+	forecast.state.echo[3] = 2
+	var before := forecast.state.duplicate(true)
+	var result := forecast.preview(3)
+	check(forecast.state == before and forecast.previous.is_empty() and forecast.events.is_empty(), "preview leaves state, undo and timeline untouched")
+	check(not result.watered.has(4) and not result.watered.has(5), "preview water stops at a rock")
+	check(result.echo and result.waves == 2 and result.blooms.size() == 6, "preview includes the Echo cascade")
+	forecast.place(3)
+	check(result.points == forecast.state.score and result.waves == forecast.state.combo, "forecast agrees with committed resolution")
+	check(forecast.preview(15, -2).is_empty() and forecast.preview(-1).is_empty(), "invalid previews are empty")
+
 	var puzzle := Puzzles.tutorial()
 	verify_solution(puzzle, "tutorial")
 	for level in range(1, Puzzles.LEVEL_COUNT + 1):

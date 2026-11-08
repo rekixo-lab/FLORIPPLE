@@ -76,6 +76,36 @@ func select(slot: int) -> bool:
 func can_place(cell: int, slot: int) -> bool:
 	return state.status == "playing" and cell >= 0 and cell < COUNT and slot >= 0 and slot < 3 and state.board[cell] == EMPTY and state.tray[slot] >= 0
 
+func preview(cell: int, slot: int = -1) -> Dictionary:
+	if slot == -1:
+		slot = state.slot
+	if not can_place(cell, slot):
+		return {}
+	var trial := Garden.new()
+	trial.state = state.duplicate(true)
+	trial.place(cell, slot)
+	var watered := {}
+	var growth := {}
+	var blooms := {}
+	var waves := 0
+	for event: Dictionary in trial.events:
+		match event.kind:
+			"pulse", "echo":
+				for affected: int in event.cells:
+					watered[affected] = true
+			"growth":
+				for affected: int in event.cells:
+					growth[affected] = event.board[affected]
+			"match":
+				waves += 1
+				for affected: int in event.cells:
+					blooms[affected] = true
+	return {
+		"cell": cell, "seed": plant(state.tray[slot], 0), "watered": watered,
+		"growth": growth, "blooms": blooms, "waves": waves,
+		"points": trial.state.score - state.score, "echo": state.echo[cell] > 0
+	}
+
 func place(cell: int, slot: int = -1) -> bool:
 	if slot == -1:
 		slot = state.slot
@@ -200,6 +230,8 @@ func _resolve(fresh: Dictionary, wave: int) -> int:
 
 func objective() -> int:
 	match state.puzzle.get("goal", "score"):
+		"learn":
+			return state.moves
 		"flowers":
 			return state.cleared[state.puzzle.color]
 		"echo":

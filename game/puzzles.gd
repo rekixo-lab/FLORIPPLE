@@ -6,9 +6,9 @@ const NAMES := ["Green", "Pink", "Blue", "Golden"]
 
 static func tutorial() -> Dictionary:
 	return {
-		"id": 0, "seed": 17, "goal": "echo", "target": 1, "limit": 7, "tray": [1, 0, 2],
-		"plants": [[0, 1, 2], [1, 1, 1], [2, 1, 0]],
-		"guide": [[3, 0], [8, 1], [1, 2]]
+		"id": 0, "seed": 17, "goal": "learn", "target": 5, "limit": 5, "tray": [1, 0, 2],
+		"plants": [[0, 1, 2], [1, 1, 1], [2, 1, 0], [9, 2, 0]],
+		"guide": [[35, 2], [3, 0], [8, 1], [1, 0], [12, 1]], "choice": [12, 13]
 	}
 
 static func level(id: int) -> Dictionary:

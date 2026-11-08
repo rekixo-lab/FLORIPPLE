@@ -27,7 +27,7 @@ def write(name, width, height, defs, body):
     (ASSETS / name).write_text(svg.replace("><", ">\n<"))
 
 
-def flower(color, stage, petals):
+def flower(color, stage, petals, openness=1.0):
     leaf = '<path d="M64 99 Q51 72 22 77 Q28 106 64 103 Q88 101 104 75 Q79 72 64 99Z" fill="url(#leaf)" stroke="#23552a" stroke-width="1.5"/>'
     veins = '<path d="M37 85 Q57 96 64 101 Q78 92 91 82" fill="none" stroke="#d9f47a" opacity=".7" stroke-width="1.7"/>'
     body = '<ellipse cx="65" cy="109" rx="44" ry="13" fill="#160b09" opacity=".28"/><ellipse cx="65" cy="108" rx="29" ry="8" fill="#21110a" opacity=".4"/>'
@@ -50,7 +50,13 @@ def flower(color, stage, petals):
         for ring, scale in ((0, 1), (1, .70)):
             for i in range(petals):
                 angle = (i + .5 * ring) * 360 / petals
-                body += f'<g transform="translate(64 52) rotate({angle:.3f}) scale({scale} {scale})"><path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#{color})" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/><path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/></g>'
+                transform = f'rotate({angle:.3f}) scale({scale} {scale})'
+                if openness < 1:
+                    angle = ((angle + 180) % 360 - 180) * openness
+                    width = scale * (.64 + .36 * openness)
+                    length = scale * (.57 + .43 * openness)
+                    transform = f'rotate({angle:.3f}) scale({width:.3f} {length:.3f})'
+                body += f'<g transform="translate(64 52) {transform}"><path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#{color})" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/><path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/></g>'
         body += '<circle cx="64" cy="52" r="16" fill="url(#pollen)" stroke="#ad6425" stroke-width="2"/><path d="M55 48 Q58 42 66 43" fill="none" stroke="#fff7c6" stroke-width="3" stroke-linecap="round"/>'
         for x, y in [(59, 54), (67, 52), (71, 57), (63, 61), (74, 48)]:
             body += f'<circle cx="{x}" cy="{y}" r="1.8" fill="#b77928"/>'
@@ -64,12 +70,17 @@ def main():
     defs = gradient("leaf", ["#e0fa91", "#78bd4e", "#23734b"], True)
     defs += gradient("pollen", ["#ffffb0", "#ffce58", "#d67b21"], True)
     body = ""
+    opening = ""
     for species, (*colors, petals) in enumerate(PALETTES):
         name = f"petal{species}"
         defs += gradient(name, colors, True)
         for stage in range(3):
             body += f'<g transform="translate({128 * stage} {128 * species})">{flower(name, stage, petals)}</g>'
+        for frame in range(6):
+            openness = .24 + .76 * frame / 5
+            opening += f'<g transform="translate({128 * frame} {128 * species})">{flower(name, 2, petals, openness)}</g>'
     write("plants.svg", 384, 512, defs, body)
+    write("bloom_opening.svg", 768, 512, defs, opening)
     petals = flower("gold", 2, 7)
     logo_defs = defs + gradient("gold", ["#fff8a4", "#ffc34b", "#f37d39"], True)
     write("icon.svg", 128, 128, logo_defs,

@@ -504,7 +504,7 @@ func _present_turn() -> void:
 		var kind: String = event.kind
 		var seconds: float = timings[kind] * speed
 		board.animate(event, seconds)
-		sound.play(kind)
+		sound.play("combo" if kind == "blast" and event.wave > 1 else kind)
 		if kind == "echo":
 			feedback.text = "BLOOM ECHO"
 		if kind == "blast":

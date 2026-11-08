@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<defs>
+<radialGradient id="leaf" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#e0fa91"/>
+<stop offset="0.500" stop-color="#78bd4e"/>
+<stop offset="1.000" stop-color="#23734b"/>
+</radialGradient>
+<radialGradient id="pollen" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#ffffb0"/>
+<stop offset="0.500" stop-color="#ffce58"/>
+<stop offset="1.000" stop-color="#d67b21"/>
+</radialGradient>
+<radialGradient id="petal0" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#f2ffc0"/>
+<stop offset="0.500" stop-color="#a2db40"/>
+<stop offset="1.000" stop-color="#39832d"/>
+</radialGradient>
+<radialGradient id="petal1" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#ffe8ec"/>
+<stop offset="0.500" stop-color="#ff7eb6"/>
+<stop offset="1.000" stop-color="#ad2670"/>
+</radialGradient>
+<radialGradient id="petal2" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#e4fcff"/>
+<stop offset="0.500" stop-color="#62c6ff"/>
+<stop offset="1.000" stop-color="#3652c0"/>
+</radialGradient>
+<radialGradient id="petal3" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#fff7b1"/>
+<stop offset="0.500" stop-color="#ffba41"/>
+<stop offset="1.000" stop-color="#d16a21"/>
+</radialGradient>
+<radialGradient id="gold" cx="35%" cy="25%" r="74%">
+<stop offset="0.000" stop-color="#fff8a4"/>
+<stop offset="0.500" stop-color="#ffc34b"/>
+<stop offset="1.000" stop-color="#f37d39"/>
+</radialGradient>
+</defs>
+<g transform="translate(22 22) scale(.66)">
+<ellipse cx="65" cy="109" rx="44" ry="13" fill="#160b09" opacity=".28"/>
+<ellipse cx="65" cy="108" rx="29" ry="8" fill="#21110a" opacity=".4"/>
+<ellipse cx="65" cy="106" rx="21" ry="8" fill="url(#gold)" stroke="#352112" stroke-width="2"/>
+<path d="M64 105 Q56 79 64 57" fill="none" stroke="#2b662a" stroke-width="8" stroke-linecap="round"/>
+<path d="M64 99 Q51 72 22 77 Q28 106 64 103 Q88 101 104 75 Q79 72 64 99Z" fill="url(#leaf)" stroke="#23552a" stroke-width="1.5"/>
+<path d="M37 85 Q57 96 64 101 Q78 92 91 82" fill="none" stroke="#d9f47a" opacity=".7" stroke-width="1.7"/>
+<ellipse cx="64" cy="58" rx="43" ry="37" fill="#331526" opacity=".28"/>
+<g transform="translate(64 52) rotate(0.000) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(51.429) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(102.857) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(154.286) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(205.714) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(257.143) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(308.571) scale(1 1)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(25.714) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(77.143) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(128.571) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(180.000) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(231.429) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(282.857) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<g transform="translate(64 52) rotate(334.286) scale(0.7 0.7)">
+<path d="M0 8 C-13 -1 -25 -23 -17 -36 C-10 -49 12 -51 19 -37 C28 -21 10 1 0 8Z" fill="url(#gold)" stroke="#6e3652" stroke-opacity=".35" stroke-width="1.4"/>
+<path d="M-12 -32 Q-6 -42 6 -41" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".52"/>
+</g>
+<circle cx="64" cy="52" r="16" fill="url(#pollen)" stroke="#ad6425" stroke-width="2"/>
+<path d="M55 48 Q58 42 66 43" fill="none" stroke="#fff7c6" stroke-width="3" stroke-linecap="round"/>
+<circle cx="59" cy="54" r="1.8" fill="#b77928"/>
+<circle cx="67" cy="52" r="1.8" fill="#b77928"/>
+<circle cx="71" cy="57" r="1.8" fill="#b77928"/>
+<circle cx="63" cy="61" r="1.8" fill="#b77928"/>
+<circle cx="74" cy="48" r="1.8" fill="#b77928"/>
+</g>
+</svg>

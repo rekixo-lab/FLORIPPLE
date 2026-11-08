@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100">
+  <defs>
+    <linearGradient id="sheen" x2="0" y2="100%">
+      <stop stop-color="#fff4cf" stop-opacity=".27"/>
+      <stop offset="1" stop-color="#fff4cf" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M6 33 Q6 6 24 6 H176 Q194 6 194 33 V43 Q100 51 6 43Z" fill="url(#sheen)"/>
+</svg>

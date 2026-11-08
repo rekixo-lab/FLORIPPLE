@@ -1,49 +1,87 @@
-# FLORIPPLE — Android Build Setup
-
-## Identity (fixed)
+# FLORIPPLE Android builds
 
 | Setting | Value |
 | --- | --- |
-| Godot project title | `FLORIPPLE` |
-| Android launcher display name | `FLORIPPLE` |
-| Game name in documentation | `Floripple` |
-| Package / application ID | `com.rekixo.floripple` |
-| Version | `0.1.0` |
+| Display name | FLORIPPLE |
+| Package | `com.rekixo.floripple` |
+| Minimum Android API | 24 |
+| Target Android API | 36 |
+| Rendering | Godot GL Compatibility |
 | Orientation | Portrait |
-| Android target SDK | 36 |
-| Android min SDK | 24 |
+| Debug architectures | arm64-v8a, x86_64 |
+| Play architecture | arm64-v8a |
 
-The app ID is configured in both Android export presets, rather than only documented in README. Do not change the package ID after publishing: Google Play treats a new package ID as a different app.
+## Toolchain
 
-## Project scope
+Use Godot 4.7.2 with matching Android export templates, OpenJDK 17, Android SDK platform 36, and Android build-tools 36.0.0. Set the SDK and Java paths in **Editor Settings → Export → Android**. With the Flatpak build of Godot, the bundled JDK extension can be configured at `/usr/lib/sdk/openjdk17/jvm/openjdk-17` inside the sandbox.
 
-This commit creates a valid Godot project entry scene and export configurations. The entry scene is **only a bootstrap screen**, not the 6×6 production game, and no claim is made that a playable game or finished premium artwork has been implemented. Follow the main README for the complete design specification.
+The standalone debug template supplies its own API levels. The Gradle release preset explicitly sets API 24 and 36. The application requests vibration permission for optional haptics. Game logic, daily generation, audio, and saves run locally.
 
-## Open in Godot
+## Debug APK
 
-1. Install a recent Godot 4 editor with Android export support.
-2. Use **Import** in the Godot Project Manager and select `project.godot`.
-3. Run the project (F6/F5 as appropriate) to inspect the initial FLORIPPLE branding scene.
+From the project root, run:
 
-## Build a debug APK
+```sh
+mkdir -p build
+touch build/.gdignore
+godot --headless --path . --export-debug "Android Debug APK" "$PWD/build/FLORIPPLE-debug.apk"
+adb install -r build/FLORIPPLE-debug.apk
+adb shell am start -n com.rekixo.floripple/com.godot.game.GodotAppLauncher
+```
 
-1. Install Android SDK and OpenJDK 17, then configure their paths under Godot Editor Settings.
-2. Install the matching Godot Android export templates.
-3. Choose **Project > Export > Android Debug APK**.
-4. Export in debug mode to `build/FLORIPPLE-debug.apk`.
-5. Install the resulting APK on a test Android phone.
+If your system uses the Godot Flatpak, replace `godot` with `flatpak run org.godotengine.Godot`. The debug preset uses the editor's debug keystore. Check that Godot can access that key from the configured editor environment.
 
-## Build for Google Play (AAB)
+Verify the APK before distribution:
 
-1. In Godot, install the Android build template using **Project > Install Android Build Template**.
-2. Choose **Project > Export > Android Play AAB**. Its preset already enables the Gradle build and AAB format.
-3. Supply a **private release keystore**, key alias and password in local settings or secure environment variables. Never commit them.
-4. Export with debug disabled to `build/FLORIPPLE-release.aab`.
-5. Verify the installed app label and package ID; then complete gameplay and store-readiness testing before submitting to Google Play.
+```sh
+apksigner verify --verbose build/FLORIPPLE-debug.apk
+aapt dump badging build/FLORIPPLE-debug.apk
+zipalign -c -P 16 4 build/FLORIPPLE-debug.apk
+```
 
-For CI, inject signing information through secret environment variables:
-`GODOT_ANDROID_KEYSTORE_RELEASE_PATH`, `GODOT_ANDROID_KEYSTORE_RELEASE_USER`, and `GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD`.
+## Signed Play AAB
 
-The signing key, Android SDK, Godot export templates, Android build template and Godot executable are not bundled with this GitHub repository.
+Use the Android build template installed by Godot and select the **Android Play AAB** preset. Supply your private Play upload keystore, its key alias, and its password through the editor or secure environment variables. Godot reads `GODOT_ANDROID_KEYSTORE_RELEASE_PATH`, `GODOT_ANDROID_KEYSTORE_RELEASE_USER`, and `GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD`. Keep these values outside Git.
 
-The current `main.tscn` is an identity/bootstrap scene and **must be replaced with the final functional game scene before publication**.
+```sh
+godot --headless --path . --install-android-build-template \
+  --export-release "Android Play AAB" "$PWD/build/FLORIPPLE-release.aab"
+```
+
+For local unsigned verification, copy the project into a separate directory and set `package/signed=false` for the Play preset in that copy. Export with the same command and use `FLORIPPLE-unsigned.aab` as the output filename. For a Play upload, use the signed export and validate the bundle with `bundletool validate --bundle=build/FLORIPPLE-release.aab`.
+
+## Repeatable verification
+
+```sh
+godot --headless --path . --editor --import
+godot --headless --path . --script tests/rules.gd
+godot --headless --path . --script tests/ui.gd
+godot --headless --path . --script tests/balance.gd
+mkdir -p build/qa
+FLORIPPLE_SCREENSHOTS="$PWD/build/qa" godot --path . --script tests/ui.gd
+```
+
+The rules suite replays a winning sequence for every published level, along with daily samples, and checks score, Echo, chain resolution, and save recovery. The UI suite uses Godot viewport pointer events and a separate test save. The simulation compares five strategies on the production rules. Its Endless runs stop at 100 moves.
+
+Daily puzzles use UTC dates and a deterministic map and orientation derived from the date. Saves store the complete stable state, including RNG and tray, with a version, checksum, temporary-file replacement, and a previous-save backup. Android force-stop after a committed move can be tested by returning to the home screen and using **Continue garden** on relaunch.
+
+For a physical-device pass, test gestures near cutouts, background and resume, headphones and haptics, and frame pacing across graphics presets.
+
+## GitHub Actions artifacts
+
+The **Godot verification** workflow runs the Godot suites, exports a debug APK
+and an unsigned AAB, and uploads both as **floripple-android**. Open a successful
+workflow run and download the archive under **Artifacts**. CI creates a fresh
+debug key each run. Android may require removing a prior APK signed by a
+different debug key before installing a new CI build. Removing the app also
+removes its local saves.
+
+For a longer simulation, pass a seed count, move cap and optional strategy:
+
+```sh
+godot --headless --path . -s tests/balance.gd -- 1000 500 random
+```
+
+The output reports how many sessions reached the move cap. Treat those session
+lengths as lower bounds. Simulations measure the rules under programmed play.
+Physical-device and human playtesting measure different outcomes.

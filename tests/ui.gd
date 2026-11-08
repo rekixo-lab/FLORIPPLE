@@ -44,6 +44,14 @@ func click_at(at: Vector2) -> void:
 func tap_board(cell: int) -> void:
 	click_at(app.board.get_global_transform_with_canvas() * app.board.center(cell))
 
+func touch_cell(cell: int, index: int, pressed: bool) -> void:
+	var event := InputEventScreenTouch.new()
+	event.index = index
+	event.pressed = pressed
+	event.position = root.get_stretch_transform() * (app.board.get_global_transform_with_canvas() * app.board.center(cell))
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+
 func settle() -> void:
 	var deadline := Time.get_ticks_msec() + 3500
 	while app.locked and Time.get_ticks_msec() < deadline:
@@ -76,9 +84,12 @@ func run() -> void:
 	await capture("tutorial")
 	tap_board(4)
 	check(app.garden.state.moves == 0, "invalid tutorial cell")
-	tap_board(3)
+	touch_cell(3, 0, true)
+	touch_cell(8, 1, true)
+	touch_cell(8, 1, false)
+	touch_cell(3, 0, false)
 	tap_board(8)
-	check(app.garden.state.moves == 1 and app.locked, "rapid second input rejected")
+	check(app.garden.state.moves == 1 and app.locked, "multitouch and rapid second input rejected")
 	await settle()
 	check(app.board.cue == 8, "second tutorial cue")
 	tap_board(8)
